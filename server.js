@@ -1,5 +1,11 @@
-var http = require('http');
+var http = require("http"),
+    port = 80;
 
-http.createServer(function(req, res) {
-    res.end('Hello, Raspberry Pi');
-}).listen(80);
+var server = http.createServer(function(request,response){
+    response.writeHeader(200, {"Content-Type": "text/plain"});
+    response.write("Hello HTTP!");
+    response.end();
+});
+
+server.listen(port);
+console.log("Server Running on "+port+".\nLaunch http://localhost:"+port);
