@@ -1,0 +1,25 @@
+{
+  "name": "Projector-Screen",
+  "version": "1.0.0",
+  "description": "Raspberry Pi, Node, Web controller spinning a stepper motor to raise and lower a projection screen",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ndoty/projector-screen"
+  },
+  "keywords": [
+    "raspberry",
+    "pi",
+    "node",
+    "web"
+  ],
+  "author": "Nicholas Faust-Doty",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ndoty/projector-screen/issues"
+  },
+  "homepage": "https://github.com/ndoty/projector-screen"
+}
