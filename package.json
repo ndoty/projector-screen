@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/ndoty/projector-screen/issues"
   },
-  "homepage": "https://github.com/ndoty/projector-screen"
+  "homepage": "https://github.com/ndoty/projector-screen",
+  "dependencies": {
+    "pi-gpio": "0.0.8"
+  }
 }
