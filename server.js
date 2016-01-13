@@ -43,9 +43,13 @@ app.get('/lower', function (req, res) {
 
 function togglePin (pin, val, cb) {
     if(!pins.hasOwnProperty(pin)) {
-        gpio.open(pin, "output");
+        gpio.open(pin, "output", writePin(pin, val, cb););
+    } else {
+        writePin(pin, val, cb);
     }
+}
 
+function writePin(pin, val, cb) {
     gpio.write(pin, val, function (err) {
         if (err) {
             console.log("GPIO WRITE ERROR: " + err);
