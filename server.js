@@ -6,14 +6,18 @@ var express = require('express'),
 
 app.set('view engine', 'jade');
 
-gpio.open(40, "output");
+gpio.open(40, "output", function (err) {
+    if (err) console.log("ERROR: " + err); return false;
 
-gpio.read(40, function(err, value) {
-    if (err) console.log("ERROR: " + err);
+    gpio.read(40, function(err, value) {
+        if (err) console.log("ERROR: " + err); return false;
 
-    state = value;
+        state = value;
 
-    console.log("Pin 40 is :" + value);
+        console.log("Pin 40 is :" + value);
+
+        gpio.close(40);
+    });
 });
 
 app.use(express.static('public'));
@@ -34,10 +38,14 @@ app.get('/lower', function(req, res) {
 });
 
 function togglePin(pin, val, res) {
+    gpio.open(pin, "output");
+
     gpio.write(pin, val, function(err) {
         if (err) console.log("ERROR: " + err);
 
         console.log('Pin ' + pin + ' set to ' + val);
+
+        gpio.close(pin);
 
         res.render('index', {state: val});
     });
