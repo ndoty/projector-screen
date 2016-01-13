@@ -43,7 +43,7 @@ app.get('/lower', function (req, res) {
 
 function togglePin (pin, val, cb) {
     if(!pins.hasOwnProperty(pin)) {
-        gpio.open(pin, "output", writePin(pin, val, cb););
+        gpio.open(pin, "output", writePin(pin, val, cb);
     } else {
         writePin(pin, val, cb);
     }
