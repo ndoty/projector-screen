@@ -64,9 +64,9 @@ process.on('SIGINT', function() {
     console.log("Caught interrupt signal");
 
     for (var pin in pins) {
+        console.log("Closing Pin: " + pin);
         gpio.close(pin);
     }
 
-    if (i_should_exit)
-        process.exit();
+    process.exit();
 });
