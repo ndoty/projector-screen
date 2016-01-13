@@ -6,11 +6,13 @@ var express = require('express'),
 
 app.set('view engine', 'jade');
 
+gpio.close(40);
+
 gpio.open(40, "output", function (err) {
-    if (err) console.log("ERROR: " + err); return false;
+    if (err) console.log("GPIO OPEN ERROR: " + err); return false;
 
     gpio.read(40, function(err, value) {
-        if (err) console.log("ERROR: " + err); return false;
+        if (err) console.log("GPIO READ ERROR: " + err); return false;
 
         state = value;
 
@@ -38,16 +40,16 @@ app.get('/lower', function(req, res) {
 });
 
 function togglePin(pin, val, res) {
-    gpio.open(pin, "output");
+    gpio.open(pin, "output", function () {
+        gpio.write(pin, val, function(err) {
+            if (err) console.log("GPIO WRITE ERROR: " + err);
 
-    gpio.write(pin, val, function(err) {
-        if (err) console.log("ERROR: " + err);
+            console.log('Pin ' + pin + ' set to ' + val);
 
-        console.log('Pin ' + pin + ' set to ' + val);
+            gpio.close(pin);
 
-        gpio.close(pin);
-
-        res.render('index', {state: val});
+            res.render('index', {state: val});
+        });
     });
 }
 
