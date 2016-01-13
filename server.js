@@ -46,7 +46,7 @@ function togglePin(pin, val, res) {
 
     console.log("After open: " + pin + " " + val);
 
-    gpio.write(pin, val, function (err) {
+    gpio.write(pin, val, function (err, pin, val) {
         console.log("After write: " + pin + " " + val);
         if (err) console.log("GPIO WRITE ERROR: " + err);
 
@@ -61,7 +61,7 @@ function togglePin(pin, val, res) {
             pins.push(pin);
         }
 
-        console.log("Open pins: ");
+        console.log("Open pins");
 
         for (var pin in pins) {
             console.log("[" + pin + "]");
