@@ -1,6 +1,6 @@
 var express = require('express'),
     app = express(),
-    gpio = require('rpi-gpio'),
+    gpio = require('pi-gpio'),
     // pin = 40,
     state;
 
