@@ -41,6 +41,30 @@ app.get('/lower', function (req, res) {
     });
 });
 
+app.get('/runMotor', function (req, res) {
+    runMotor(function () {
+        res.redirect('/');
+    });
+})
+
+function runMotor(cb) {
+    var run = true;
+
+    setTimeout(function () {
+        run = false
+        if (cb) cb();
+    }, 30000);
+
+    togglePin(40, 1);
+
+    while (run) {
+        writePin(40, 1);
+        setTimeout(function () {
+            writePin(40, 0);
+        }, 1000);
+    }
+}
+
 function togglePin (pin, val, cb) {
     if(!pins.hasOwnProperty(pin)) {
         gpio.open(pin, "output", writePin(pin, val, cb));
