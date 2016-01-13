@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
-    pins = [],
+    pins = {},
     // pin = 40,
     state;
 
@@ -71,7 +71,7 @@ function test(pin, val, res) {
 
     console.log("Open pins");
 
-    for (var pin in pins) {
+    for (pin in pins) {
         console.log("[" + pin + "]");
     }
 
