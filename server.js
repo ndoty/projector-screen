@@ -6,8 +6,6 @@ var express = require('express'),
 
 app.set('view engine', 'jade');
 
-gpio.close(40);
-
 gpio.open(40, "output", function (err) {
     if (err) console.log("GPIO OPEN ERROR: " + err); return false;
 
@@ -28,8 +26,7 @@ app.get('/', function(req, res) {
     res.render('index', {state: state});
 });
 
-var bool = true,
-    timeout;
+var bool = true;
 
 app.get('/raise', function(req, res) {
     togglePin(40, 0, res);
