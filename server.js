@@ -1,6 +1,7 @@
 var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
+    pins = [],
     // pin = 40,
     state;
 
@@ -39,11 +40,13 @@ app.get('/lower', function(req, res) {
 function togglePin(pin, val, res) {
     gpio.open(pin, "output", function () {
         gpio.write(pin, val, function(err) {
-            if (err) console.log("GPIO WRITE ERROR: " + err);
+            if (err) console.log("GPIO WRITE ERROR: " + err); return false;
+
+            if(pins.indexOf(pin) == -1) {
+                pins.push(pin);
+            }
 
             console.log('Pin ' + pin + ' set to ' + val);
-
-            gpio.close(pin);
 
             res.render('index', {state: val});
         });
@@ -55,4 +58,15 @@ var server = app.listen(3000, function() {
         port = server.address().port;
 
     console.log('Listening at http://%s:%s', host, port);
+});
+
+process.on('SIGINT', function() {
+    console.log("Caught interrupt signal");
+
+    for (var pin in pins) {
+        gpio.close(pin);
+    }
+
+    if (i_should_exit)
+        process.exit();
 });
