@@ -44,7 +44,9 @@ function togglePin(gpioPin, pinVal, pageRes) {
         val = pinVal,
         res = pageRes;
 
-    gpio.open(pin, "output");
+    if(!pins.hasOwnProperty(pin)) {
+        gpio.open(pin, "output");
+    }
 
     gpio.write(pin, val, function (err) {
         if (err) {
