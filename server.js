@@ -59,7 +59,7 @@ function togglePin(pin, val, res) {
                 console.log("[" + pin + "]");
             }
 
-            res.redirect('/').render('index', {state: val});
+            res.redirect('/');
         });
     });
 }
