@@ -33,11 +33,11 @@ app.get('/lower', function(req, res) {
 
 function togglePin(pin, val, res) {
     gpio.write(pin, val, function(err) {
-        // if (err) throw err;
+        if (err) throw err;
 
         console.log('Pin ' + pin + ' set to ' + val);
 
-        res.render('index', {state: "test"});
+        res.render('index', {state: val});
     });
 }
 
