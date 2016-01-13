@@ -49,7 +49,6 @@ function togglePin(gpioPin, pinVal, pageRes) {
     gpio.write(pin, val, function (err) {
         if (err) {
             console.log("GPIO WRITE ERROR: " + err);
-            return false;
         }
 
         test(pin, val, res)
