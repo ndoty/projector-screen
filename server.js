@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
-    pin = 11;
+    pin = 40;
 
 app.set('view engine', 'jade');
 
@@ -10,28 +10,25 @@ app.set('view engine', 'jade');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-    res.render('index');
+    res.render('index', {state: "test"});
 });
 
 var bool = true,
     timeout;
 
-app.get('/test', function(req, res) {
-    console.log('Pin Toggled: ' +  bool);
-
-    // togglePin(bool);
-    bool = !bool;
-
-    res.render('index');
-});
-
 app.get('/raise', function(req, res) {
     clearInterval(timeout);
+
+    gpio.open(pin, "output", function(err) {
+        gpio.write(pin, 1, function() {
+            gpio.close(pin);
+        });
+    });
 
     // togglePin(false);
     console.log('Pin #' + pin + ' turned off');
 
-    res.render('index');
+    res.render('index', {state: "test"});
 });
 
 app.get('/lower', function(req, res) {
@@ -40,7 +37,7 @@ app.get('/lower', function(req, res) {
     // togglePin(true);
     console.log('Pin #' + pin + ' turned on');
 
-    res.render('index');
+    res.render('index', {state: "test"});
 });
 
 function togglePin(val) {
