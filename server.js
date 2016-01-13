@@ -6,6 +6,8 @@ var express = require('express'),
 
 app.set('view engine', 'jade');
 
+gpio.close(40);
+
 gpio.open(40, "output", function (err) {
     if (err) console.log("GPIO OPEN ERROR: " + err); return false;
 
