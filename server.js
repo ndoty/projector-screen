@@ -50,12 +50,18 @@ function togglePin(gpioPin, pinVal, pageRes) {
 
     console.log("After open: " + pin + " " + val);
 
-    gpio.write(pin, val, test(err, pin, val, res));
+    gpio.write(pin, val, function (err) {
+        if (err) {
+            console.log("GPIO WRITE ERROR: " + err);
+            return false;
+        }
+
+        test(pin, val, res)
+    });
 }
 
 function test(err, pin, val, res) {
     console.log("After write: " + pin + " " + val);
-    if (err) console.log("GPIO WRITE ERROR: " + err);
 
     console.log(pin, val);
 
