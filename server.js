@@ -32,18 +32,16 @@ app.get('/', function (req, res) {
 var bool = true;
 
 app.get('/raise', function (req, res) {
-    togglePin(40, 0, res);
+    togglePin(40, 0, function (res) {
+        res.redirect('/');
+    });
 });
 
 app.get('/lower', function (req, res) {
     togglePin(40, 1, res);
 });
 
-function togglePin(gpioPin, pinVal, pageRes) {
-    var pin = gpioPin,
-        val = pinVal,
-        res = pageRes;
-
+function togglePin (pin, val, cb) {
     if(!pins.hasOwnProperty(pin)) {
         gpio.open(pin, "output");
     }
@@ -53,15 +51,11 @@ function togglePin(gpioPin, pinVal, pageRes) {
             console.log("GPIO WRITE ERROR: " + err);
         }
 
-        test(pin, val, res)
+        afterToggle(pin, val, cb);
     });
 }
 
-function test(pin, val, res) {
-    console.log("After write: " + pin + " " + val);
-
-    console.log(pin, val);
-
+function afterToggle (pin, val, cb) {
     console.log('Pin ' + pin + ' set to ' + val);
 
     state = val;
@@ -77,7 +71,7 @@ function test(pin, val, res) {
         console.log("[" + pin + "]");
     }
 
-    res.redirect('/');
+    if (cb) cb();
 }
 
 var server = app.listen(3000, function () {
