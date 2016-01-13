@@ -17,8 +17,6 @@ gpio.open(40, "output", function (err) {
 
         state = value;
 
-        console.log("Pin 40 is :" + value);
-
         gpio.close(40);
     });
 });
@@ -32,7 +30,7 @@ app.get('/', function (req, res) {
 var bool = true;
 
 app.get('/raise', function (req, res) {
-    togglePin(40, 0, function (res) {
+    togglePin(40, 0, function () {
         res.redirect('/');
     });
 });
