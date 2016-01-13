@@ -7,7 +7,7 @@ var express = require('express'),
 app.set('view engine', 'jade');
 
 gpio.read(40, function(err, value) {
-    if(err) throw err;
+    // if(err) throw err;
     state = value;
     console.log(value);
 });
@@ -31,7 +31,7 @@ app.get('/lower', function(req, res) {
 
 function togglePin(pin, val, res) {
     gpio.write(pin, val, function(err) {
-        if (err) throw err;
+        // if (err) throw err;
 
         console.log('Pin ' + pin + ' set to ' + value);
 
