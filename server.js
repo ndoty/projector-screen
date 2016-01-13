@@ -38,10 +38,7 @@ app.get('/raise', function (req, res) {
 });
 
 app.get('/lower', function (req, res) {
-    var res = res;
-
-    togglePin(40, 1, function (res) {
-        console.log(res);
+    togglePin(40, 1, function () {
         res.redirect('/');
     });
 });
