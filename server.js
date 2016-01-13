@@ -66,7 +66,7 @@ function test(pin, val, res) {
 
     if(!pins.hasOwnProperty(pin)) {
         console.log("Adding Pin " + pin + " to open pins.")
-        pins.push(pin);
+        pins[pin] = pin;
     }
 
     console.log("Open pins");
