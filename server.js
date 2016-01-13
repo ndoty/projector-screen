@@ -40,29 +40,29 @@ app.get('/lower', function (req, res) {
 });
 
 function togglePin(pin, val, res) {
-    console.log(pin, val);
+    gpio.open(pin, "output");
 
-    gpio.open(pin, "output", function (pin, val, res) {
-        gpio.write(pin, val, function (err, pin, val, res) {
-            if (err) console.log("GPIO WRITE ERROR: " + err);
+    gpio.write(pin, val, function (err) {
+        if (err) console.log("GPIO WRITE ERROR: " + err);
 
-            console.log('Pin ' + pin + ' set to ' + val);
+        console.log(pin, val);
 
-            state = val;
+        console.log('Pin ' + pin + ' set to ' + val);
 
-            if(pins.indexOf(pin) == -1) {
-                console.log("Adding Pin " + pin + " to open pins.")
-                pins.push(pin);
-            }
+        state = val;
 
-            console.log("Open pins: ");
+        if(pins.indexOf(pin) == -1) {
+            console.log("Adding Pin " + pin + " to open pins.")
+            pins.push(pin);
+        }
 
-            for (var pin in pins) {
-                console.log("[" + pin + "]");
-            }
+        console.log("Open pins: ");
 
-            res.redirect('/');
-        });
+        for (var pin in pins) {
+            console.log("[" + pin + "]");
+        }
+
+        res.redirect('/');
     });
 }
 
