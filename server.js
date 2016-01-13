@@ -7,6 +7,8 @@ var express = require('express'),
 
 app.set('view engine', 'jade');
 
+app.set('title', "Pi Projector Screen Toggle")
+
 gpio.open(40, "output", function (err) {
     if (err) console.log("GPIO OPEN ERROR: " + err);
 
@@ -38,9 +40,7 @@ app.get('/lower', function(req, res) {
 });
 
 function togglePin(pin, val, res) {
-    var pin = pin,
-        val = val,
-        res = res;
+    console.log(pin, val);
 
     gpio.open(pin, "output", function () {
         gpio.write(pin, val, function(err) {
@@ -59,7 +59,7 @@ function togglePin(pin, val, res) {
                 console.log("[" + pin + "]");
             }
 
-            res.render('index', {state: val});
+            res.redirect('/').render('index', {state: val});
         });
     });
 }
