@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ndoty/projector-screen",
   "dependencies": {
-    "pi-gpio": "0.0.8"
+    "pi-gpio": "0.0.8",
     "express": "^4.13.3"
   }
 }
