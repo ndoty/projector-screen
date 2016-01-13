@@ -42,11 +42,18 @@ function togglePin(pin, val, res) {
         gpio.write(pin, val, function(err) {
             if (err) console.log("GPIO WRITE ERROR: " + err); return false;
 
+            console.log('Pin ' + pin + ' set to ' + val);
+
             if(pins.indexOf(pin) == -1) {
+                console.log("Adding Pin " + pin + " to open pins.")
                 pins.push(pin);
             }
 
-            console.log('Pin ' + pin + ' set to ' + val);
+            console.log("Open pins: ");
+
+            for (var pin in pins) {
+                console.log("[" + pin + "]");
+            }
 
             res.render('index', {state: val});
         });
