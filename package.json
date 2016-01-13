@@ -25,5 +25,8 @@
   "dependencies": {
     "pi-gpio": "0.0.8",
     "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "jade": "^1.11.0"
   }
 }
