@@ -33,7 +33,7 @@ function togglePin(pin, val, res) {
     gpio.write(pin, val, function(err) {
         // if (err) throw err;
 
-        console.log('Pin ' + pin + ' set to ' + value);
+        console.log('Pin ' + pin + ' set to ' + val);
 
         res.render('index', {state: "test"});
     });
