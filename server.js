@@ -8,10 +8,10 @@ var express = require('express'),
 app.set('view engine', 'jade');
 
 gpio.open(40, "output", function (err) {
-    if (err) console.log("GPIO OPEN ERROR: " + err); return false;
+    if (err) console.log("GPIO OPEN ERROR: " + err);
 
     gpio.read(40, function(err, value) {
-        if (err) console.log("GPIO READ ERROR: " + err); return false;
+        if (err) console.log("GPIO READ ERROR: " + err);
 
         state = value;
 
@@ -40,7 +40,7 @@ app.get('/lower', function(req, res) {
 function togglePin(pin, val, res) {
     gpio.open(pin, "output", function () {
         gpio.write(pin, val, function(err) {
-            if (err) console.log("GPIO WRITE ERROR: " + err); return false;
+            if (err) console.log("GPIO WRITE ERROR: " + err);
 
             console.log('Pin ' + pin + ' set to ' + val);
 
