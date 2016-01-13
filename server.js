@@ -64,7 +64,7 @@ function test(pin, val, res) {
 
     state = val;
 
-    if(pins.indexOf(pin) == -1) {
+    if(!pins.hasOwnProperty(pin)) {
         console.log("Adding Pin " + pin + " to open pins.")
         pins.push(pin);
     }
