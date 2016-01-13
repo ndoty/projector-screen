@@ -40,9 +40,14 @@ app.get('/lower', function (req, res) {
 });
 
 function togglePin(pin, val, res) {
+    console.log("Before open: " + pin + " " + val);
+
     gpio.open(pin, "output");
 
+    console.log("After open: " + pin + " " + val);
+
     gpio.write(pin, val, function (err) {
+        console.log("After write: " + pin + " " + val);
         if (err) console.log("GPIO WRITE ERROR: " + err);
 
         console.log(pin, val);
