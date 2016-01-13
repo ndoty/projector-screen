@@ -44,11 +44,7 @@ function togglePin(gpioPin, pinVal, pageRes) {
         val = pinVal,
         res = pageRes;
 
-    console.log("Before open: " + pin + " " + val);
-
     gpio.open(pin, "output");
-
-    console.log("After open: " + pin + " " + val);
 
     gpio.write(pin, val, function (err) {
         if (err) {
@@ -60,7 +56,7 @@ function togglePin(gpioPin, pinVal, pageRes) {
     });
 }
 
-function test(err, pin, val, res) {
+function test(pin, val, res) {
     console.log("After write: " + pin + " " + val);
 
     console.log(pin, val);
