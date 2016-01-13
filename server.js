@@ -1,14 +1,10 @@
 var express = require('express'),
     app = express(),
-    gpio = require('pi-gpio'),
+    gpio = require('rpi-gpio'),
     // pin = 40,
     state;
 
 app.set('view engine', 'jade');
-
-gpio.close(21);
-
-gpio.close(40);
 
 gpio.open(40, "output", function (err) {
     if (err) console.log("GPIO OPEN ERROR: " + err); return false;
