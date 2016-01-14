@@ -19,8 +19,9 @@ var express = require('express'),
             option: "in"
         }
     },
-    maxSteps = 10000,
+    maxSteps = 100,
     currentStep = 0,
+    stepDelay = 100,
     stopMotor = false,
     status;
 
@@ -76,10 +77,10 @@ function move() {
     getEndStops();
 
     gpio.write(pins.stepPin.pinNumber, 1, function () {
-        sleep(10);
+        sleep(stepDelay);
 
         gpio.write(pins.stepPin.pinNumber, 0, function () {
-            sleep(10);
+            sleep(stepDelay);
 
             currentStep++;
 
