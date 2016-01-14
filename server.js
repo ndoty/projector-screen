@@ -52,8 +52,6 @@ app.get('/raise', function (req, res) {
     res.redirect(301, '/');
 
     raise();
-
-    res.redirect(301, '/');
 });
 
 app.get('/lower', function (req, res) {
@@ -62,14 +60,10 @@ app.get('/lower', function (req, res) {
     res.redirect(301, '/');
 
     lower();
-
-    res.redirect(301, '/');
 });
 
 app.get('/stopMotor', function (req, res) {
     stopTheMotor();
-
-    res.redirect(301, '/');
 });
 
 // Runs motor in the set direction
@@ -95,7 +89,7 @@ function move () {
 }
 
 // Stopping motor
-function stopTheMotor () {
+function stopTheMotor (res) {
     if (currentStep < maxSteps) {
         console.log("Screen is currently stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.");
 
@@ -113,6 +107,8 @@ function stopTheMotor () {
     }
 
     stopMotor = true;
+
+    res.redirect(301, '/');
 }
 
 function raise () {
