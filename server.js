@@ -2,7 +2,10 @@ var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
     pins = {},
-    // pin = 40,
+    stepPin = 40,
+    dirPin = 39,
+    enPin = 38,
+    stopMotors = false,
     state;
 
 app.set('view engine', 'jade');
@@ -42,27 +45,44 @@ app.get('/lower', function (req, res) {
 });
 
 app.get('/runMotor', function (req, res) {
-    runMotor(function () {
+    move(function () {
         res.redirect('/');
     });
-})
+});
 
-function runMotor(cb) {
-    var run = true;
 
-    setTimeout(function () {
-        run = false
-        if (cb) cb();
-    }, 30000);
+// Runs motor in the set direction
+function move() {
+    gpio.write(40, 1, function () {
+        sleep(1000);
 
-    togglePin(40, 1);
+        gpio.write(40, 0, function () {
+            sleep(1000);
+            if (!stopMotors) move();
+        });
+    });
+}
 
-    while (run) {
-        writePin(40, 1);
-        setTimeout(function () {
-            writePin(40, 0);
-        }, 1000);
-    }
+function stopMotor () {
+    stopMotors = true;
+}
+
+// Changing direction of motor
+function left () {
+    stopMotors = false;
+
+    gpio.write(39, 1, function () {
+        move();
+    });
+}
+
+// Changing direction of motor
+function right () {
+    stopMotors = false;
+
+    gpio.write(39, 0, function() {
+        move();
+    });
 }
 
 function togglePin (pin, val, cb) {
@@ -100,6 +120,16 @@ function afterToggle (pin, val, cb) {
     }
 
     if (cb) cb();
+}
+
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
 }
 
 var server = app.listen(3000, function () {
