@@ -3,19 +3,19 @@ var express = require('express'),
     gpio = require('pi-gpio'),
     pins = {
         stepPin: {
-            pinNumber: 40,
+            pinNumber: 37,
             option: "out"
         },
         dirPin: {
-            pinNumber: 39,
+            pinNumber: 38,
             option: "out"
         },
         raiseEndStop: {
-            pinNumber: 37,
+            pinNumber: 35,
             option: "in"
         },
         lowerEndStop:{
-            pinNumber: 35,
+            pinNumber: 36,
             option: "in"
         }
     },
