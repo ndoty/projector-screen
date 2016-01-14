@@ -11,11 +11,11 @@ var express = require('express'),
             option: "output"
         },
         raiseEndStop: {
-            pinNumber: 37,
+            pinNumber: 29,
             option: "input"
         },
         lowerEndStop:{
-            pinNumber: 35,
+            pinNumber: 31,
             option: "input"
         }
     },
