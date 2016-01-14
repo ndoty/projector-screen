@@ -48,8 +48,6 @@ app.get('/', function (req, res) {
 app.get('/raise', function (req, res) {
     status = "raising";
 
-    res.redirect('/', {screenStatus: status});
-
     raise();
 
     res.redirect('/', {screenStatus: status});
@@ -57,8 +55,6 @@ app.get('/raise', function (req, res) {
 
 app.get('/lower', function (req, res) {
     status = "lowering";
-
-    res.redirect('/', {screenStatus: status});
 
     lower();
 
@@ -72,8 +68,7 @@ app.get('/stopMotor', function (req, res) {
 
 // Runs motor in the set direction
 function move() {
-    console.log("Projection Screen is currently " + status);
-
+    console.log(currentStep);
     if (currentStep >= maxSteps) {
         stopMotor();
     }
