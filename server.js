@@ -1,127 +1,116 @@
 var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
-    pins = {},
-    stepPin = 40,
-    dirPin = 39,
-    enPin = 38,
-    stopMotors = false,
-    state;
+    pins = {
+        stepPin:        {pinNumber: 40, option: "output"},
+        dirPin:         {pinNumber: 39, option: "output"},
+        raiseEndStop:   {pinNumber: 37, option: "input"},
+        lowerEndStop:   {pinNumber: 35, option: "input"}
+    },
+    maxSteps = 10000,
+    currentStep = 0,
+    stopMotor = false,
+    status;
 
 app.set('view engine', 'jade');
 
 app.set('title', "Pi Projector Screen Toggle")
 
-gpio.open(40, "output", function (err) {
-    if (err) console.log("GPIO OPEN ERROR: " + err);
+// Open all pins for use
+for (var pin in pins) {
+    gpio.open(pins.pin.pinNumber, pins.pin.option, function (err) {
+        if (err) console.log("GPIO OPEN ERROR: " + err);
 
-    gpio.read(40, function (err, value) {
-        if (err) console.log("GPIO READ ERROR: " + err);
-
-        state = value;
-
-        gpio.close(40);
+        console.log("Opened pin " + pins.pin.pinNumber + " as an " + pins.pin.option);
     });
-});
+}
 
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
-    res.render('index', {state: state});
+    res.render('index', {screenStatus: status});
 });
 
-var bool = true;
-
 app.get('/raise', function (req, res) {
-    togglePin(40, 0, function () {
-        res.redirect('/');
-    });
+    status = "raising";
+
+    res.redirect('/', {screenStatus: status});
+
+    raise();
+
+    res.redirect('/', {screenStatus: status});
 });
 
 app.get('/lower', function (req, res) {
-    togglePin(40, 1, function () {
-        res.redirect('/');
-    });
+    status = "lowering";
+
+    res.redirect('/', {screenStatus: status});
+
+    lower();
+
+    res.redirect('/', {screenStatus: status});
 });
 
-app.get('/runMotor', function (req, res) {
-    move(function () {
-        res.redirect('/');
-    });
+app.get('/stopMotor', function (req, res) {
+    stopMotor();
+    res.redirect('/', {screenStatus: status});
 });
-
 
 // Runs motor in the set direction
 function move() {
-    gpio.write(40, 1, function () {
-        sleep(1000);
+    console.log("Projection is currently " + status);
 
-        gpio.write(40, 0, function () {
-            sleep(1000);
-            if (!stopMotors) move();
+    if (currentStep >= maxSteps) {
+        stopMotor();
+    }
+
+    getEndStops();
+
+    gpio.write(pins.stepPin.pinNumber, 1, function () {
+        sleep(10);
+
+        gpio.write(pins.stepPin.pinNumber, 0, function () {
+            sleep(10);
+
+            currentStep++;
+
+            if (!stopMotor && ) move();
         });
     });
 }
 
+// Stopping motor
 function stopMotor () {
-    stopMotors = true;
+    if (status === "lowering") {
+        status = lowered;
+    } else if (status === "raising") {
+        status = raised;
+    }
+
+    currentStep = 0;
+
+    stopMotor = true;
 }
 
 // Changing direction of motor
-function left () {
-    stopMotors = false;
+function raise () {
+    stopMotor = false;
 
-    gpio.write(39, 1, function () {
+    gpio.write(pins.dirPin.pinNumber, 1, function () {
         move();
     });
 }
 
 // Changing direction of motor
-function right () {
-    stopMotors = false;
+function lower () {
+    stopMotor = false;
 
-    gpio.write(39, 0, function() {
+    gpio.write(pins.dirPin.pinNumber, 0, function() {
         move();
     });
 }
 
-function togglePin (pin, val, cb) {
-    if(!pins.hasOwnProperty(pin)) {
-        gpio.open(pin, "output", writePin(pin, val, cb));
-    } else {
-        writePin(pin, val, cb);
-    }
-}
-
-function writePin(pin, val, cb) {
-    gpio.write(pin, val, function (err) {
-        if (err) {
-            console.log("GPIO WRITE ERROR: " + err);
-        }
-
-        afterToggle(pin, val, cb);
-    });
-}
-
-function afterToggle (pin, val, cb) {
-    console.log('Pin ' + pin + ' set to ' + val);
-
-    state = val;
-
-    if(!pins.hasOwnProperty(pin)) {
-        console.log("Adding Pin " + pin + " to open pins.")
-        pins[pin] = pin;
-    }
-
-    console.log("Open pins");
-
-    for (pin in pins) {
-        console.log("[" + pin + "]");
-    }
-
-    if (cb) cb();
-}
-
+// Go to sleep
 function sleep(milliseconds) {
     var start = new Date().getTime();
 
@@ -130,6 +119,25 @@ function sleep(milliseconds) {
             break;
         }
     }
+}
+
+// Get endstop values to make sure we can still move
+function getEndStops () {
+    gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
+        if(err) console.log("GPIO READ ERROR: " + err);
+
+        if (value === 0) {
+            console.log("Raise Endstop triggered, stopping motor");
+        }
+    });
+
+    gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
+        if(err) console.log("GPIO READ ERROR: " + err);
+
+        if (value === 0) {
+            console.log("Lower Endstop triggered, stopping motor");
+        }
+    });
 }
 
 var server = app.listen(3000, function () {
@@ -143,9 +151,14 @@ process.on('SIGINT', function () {
     console.log("Caught interrupt signal");
 
     for (var pin in pins) {
-        console.log("Closing Pin: " + pin);
-        gpio.close(pin);
+        gpio.close(pins.pin.pinNumber, function (err) {
+            if(err) console.log("GPIO CLOSE ERROR: " + err);
+
+            console.log("Closed pin " + pins.pin.pinNumber);
+        });
     }
+
+    console.log("All pins now closed, safe to exit.");
 
     process.exit();
 });
