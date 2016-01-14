@@ -2,10 +2,22 @@ var express = require('express'),
     app = express(),
     gpio = require('pi-gpio'),
     pins = {
-        stepPin:        {pinNumber: 40, option: "output"},
-        dirPin:         {pinNumber: 39, option: "output"},
-        raiseEndStop:   {pinNumber: 37, option: "input"},
-        lowerEndStop:   {pinNumber: 35, option: "input"}
+        stepPin: {
+            pinNumber: 40,
+            option: "output"
+        },
+        dirPin: {
+            pinNumber: 39,
+            option: "output"
+        },
+        raiseEndStop: {
+            pinNumber: 37,
+            option: "input"
+        },
+        lowerEndStop:{
+            pinNumber: 35,
+            option: "input"
+        }
     },
     maxSteps = 10000,
     currentStep = 0,
@@ -18,7 +30,7 @@ app.set('title', "Pi Projector Screen Toggle")
 
 // Open all pins for use
 for (var pin in pins) {
-    console.log(pins.pin);
+    console.log(pins[pin]);
     // gpio.open(pin.pinNumber, pin.option, function (err) {
     //     if (err) console.log("GPIO OPEN ERROR: " + err);
 
