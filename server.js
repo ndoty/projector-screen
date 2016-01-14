@@ -70,7 +70,6 @@ app.get('/stopMotor', function (req, res) {
 
 // Runs motor in the set direction
 function move () {
-    console.log(currentStep);
     if (currentStep >= maxSteps) {
         stopTheMotor();
     }
@@ -104,12 +103,13 @@ function stopTheMotor () {
         } else if (status === "raising") {
             status = "raised";
         }
+
+        console.log("Screen is currently " + status);
     }
 
     stopMotor = true;
 }
 
-// Changing direction of motor
 function raise () {
     stopMotor = false;
 
@@ -118,7 +118,6 @@ function raise () {
     });
 }
 
-// Changing direction of motor
 function lower () {
     stopMotor = false;
 
