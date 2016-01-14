@@ -49,17 +49,17 @@ app.get('/', function (req, res) {
 app.get('/raise', function (req, res) {
     status = "raising";
 
-    res.redirect(301, '/');
-
     raise();
+
+    res.redirect(301, '/');
 });
 
 app.get('/lower', function (req, res) {
     status = "lowering";
 
-    res.redirect(301, '/');
-
     lower();
+
+    res.redirect(301, '/');
 });
 
 app.get('/stopMotor', function (req, res) {
