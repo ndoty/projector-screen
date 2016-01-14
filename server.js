@@ -47,25 +47,29 @@ app.get('/', function (req, res) {
 });
 
 app.get('/raise', function (req, res) {
-    res.redirect('/', {screenStatus: status});
-
     status = "raising";
 
+    res.redirect(301, '/');
+
     raise();
+
+    res.redirect(301, '/');
 });
 
 app.get('/lower', function (req, res) {
-    res.redirect('/', {screenStatus: status});
-
     status = "lowering";
 
+    res.redirect(301, '/');
+
     lower();
+
+    res.redirect(301, '/');
 });
 
 app.get('/stopMotor', function (req, res) {
-    res.redirect('/', {screenStatus: status});
-
     stopTheMotor();
+
+    res.redirect(301, '/');
 });
 
 // Runs motor in the set direction
