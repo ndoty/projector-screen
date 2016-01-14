@@ -58,7 +58,7 @@ app.get('/stopMotor', function (req, res) {
 
 // Runs motor in the set direction
 function move() {
-    console.log("Projection is currently " + status);
+    console.log("Projection Screen is currently " + status);
 
     if (currentStep >= maxSteps) {
         stopMotor();
@@ -74,20 +74,26 @@ function move() {
 
             currentStep++;
 
-            if (!stopMotor && ) move();
+            if (!stopMotor) move();
         });
     });
 }
 
 // Stopping motor
 function stopMotor () {
-    if (status === "lowering") {
-        status = lowered;
-    } else if (status === "raising") {
-        status = raised;
-    }
+    if (currentStep < maxSteps) {
+        console.log("Screen is currently stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.");
 
-    currentStep = 0;
+        status = " stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.";
+    } else {
+        currentStep = 0;
+
+        if (status === "lowering") {
+            status = lowered;
+        } else if (status === "raising") {
+            status = raised;
+        }
+    }
 
     stopMotor = true;
 }
