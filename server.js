@@ -1,5 +1,6 @@
 var express = require('express'),
     app = express(),
+    io = require('socket.io')(app),
     gpio = require('pi-gpio'),
     pins = {
         stepPin: {
@@ -23,11 +24,14 @@ var express = require('express'),
     currentStep = 0,
     stepDelay = 100,
     stopMotor = false,
-    status;
+    status = '',
+    message = '',
+    webUIConnected = false,
+    stream;
 
 app.set('view engine', 'jade');
 
-app.set('title', "Pi Projector Screen Toggle")
+app.set('title', "Pi Projector Screen Toggle");
 
 // Open all pins for use
 for (var pin in pins) {
@@ -42,14 +46,45 @@ console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
+var server = app.listen(3000, function () {
+    var host = server.address().address,
+        port = server.address().port;
+
+    console.log('Listening at http://192.168.103:%s', port);
+});
+
+checkLimits();
+
+io.on('connection', function (socket) {
+    console.log("Web UI Connected");
+
+    webUIConnected = true;
+
+    stream = socket;
+
+    socket.emit('feedback', message);
+
+    socket.on('disconnect', function (data) {
+        webUIConnected = false;
+
+        console.log("Web UI Disconnected")
+    });
+});
+
 app.get('/', function (req, res) {
-    res.render('index', {screenStatus: status});
+    res.render('index', {feedback: message});
 });
 
 app.get('/raise', function (req, res) {
     res.redirect(301, '/');
 
     status = "raising";
+
+    message = "Screen is currently " + status;
+
+    if (webUIConnected) {
+        stream.emit('feedback', message);
+    }
 
     raise();
 });
@@ -58,6 +93,12 @@ app.get('/lower', function (req, res) {
     res.redirect(301, '/');
 
     status = "lowering";
+
+    message = "Screen is currently " + status;
+
+    if (webUIConnected) {
+        stream.emit('feedback', message);
+    }
 
     lower();
 });
@@ -70,12 +111,7 @@ app.get('/stopMotor', function (req, res) {
 
 // Runs motor in the set direction
 function move () {
-    if (currentStep >= maxSteps) {
-        stopTheMotor();
-        return;
-    }
-
-    getEndStops();
+    checkLimits();
 
     gpio.write(pins.stepPin.pinNumber, 1, function () {
         sleep(stepDelay);
@@ -93,19 +129,39 @@ function move () {
 // Stopping motor
 function stopTheMotor () {
     if (currentStep < maxSteps) {
-        console.log("Screen is currently stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.");
+        if (currentStep > 0) {
+            message = "Screen is currently stopped at step " + currentStep + " our of " + maxsteps + " steps while " + status;
 
-        status = " stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.";
+            console.log(maeesage);
+
+            if (webUIConnected) {
+                stream.emit('feedback', message);
+            }
+        } else {
+            message = "Screen should be either fully raised or lowered - Raise or lower accordingly";
+
+            console.log(maeesage);
+
+            if (webUIConnected) {
+                stream.emit('feedback', message);
+            }
+        }
     } else {
         currentStep = 0;
 
         if (status === "lowering") {
-            status = "lowered";
+            message = "Screen is now lowered";
         } else if (status === "raising") {
-            status = "raised";
+            message = message + "Screen is now raised";
         }
 
-        console.log("Screen is currently " + status);
+        status = '';
+
+        console.log(message);
+
+        if (webUIConnected) {
+            stream.emit('feedback', message);
+        }
     }
 
     stopMotor = true;
@@ -138,15 +194,31 @@ function sleep (milliseconds) {
     }
 }
 
-// Get endstop values to make sure we can still move
-function getEndStops () {
+// Make sure we can still move
+function checkLimits () {
+    if (currentStep >= maxSteps) {
+        steps = 0;
+
+        stopTheMotor();
+
+        return;
+    }
+
     gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
         if(err) console.log("GPIO READ ERROR: " + err);
 
         console.log("Raise endstop value " + value);
 
         if (value === 1) {
-            console.log("Raise Endstop triggered, stopping motor");
+            message = "Raise Endstop triggered, stopping motor";
+
+            console.log(message);
+
+            if (webUIConnected) {
+                stream.emit('feedback', message);
+            }
+
+            stopTheMotor();
         }
     });
 
@@ -156,19 +228,24 @@ function getEndStops () {
         console.log("Lower endstop value " + value);
 
         if (value === 1) {
-            console.log("Lower Endstop triggered, stopping motor");
+            message = "Lower Endstop triggered, stopping motor";
+
+            console.log(message);
+
+            if (webUIConnected) {
+                stream.emit('feedback', message);
+            }
+
+            stopTheMotor();
         }
     });
 }
 
-var server = app.listen(3000, function () {
-    var host = server.address().address,
-        port = server.address().port;
-
-    console.log('Listening at http://%s:%s', host, port);
-});
-
 process.on('SIGINT', function () {
+    if (webUIConnected) {
+        stream.emit('feedback', "SERVER DOWN");
+    }
+
     console.log("Caught interrupt signal");
 
     for (var pin in pins) {
