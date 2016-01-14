@@ -30,6 +30,7 @@ app.set('title', "Pi Projector Screen Toggle")
 
 // Open all pins for use
 for (var pin in pins) {
+    console.log(parseInt(pins[pin].pinNumber));
     gpio.open(parseInt(pins[pin].pinNumber), pins[pin].option, function (err) {
         if (err) console.log("GPIO OPEN ERROR: " + err);
 
