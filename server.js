@@ -34,10 +34,10 @@ for (var pin in pins) {
 
     gpio.open(parseInt(pins[pin].pinNumber), pins[pin].option, function (err) {
         if (err) console.log("GPIO OPEN ERROR: " + err);
-
-        console.log("All declared pins are now open and available for use.");
     });
 }
+
+console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
@@ -175,10 +175,10 @@ process.on('SIGINT', function () {
 
         gpio.close(pins[pin].pinNumber, function (err) {
             if(err) console.log("GPIO CLOSE ERROR: " + err);
-
-            console.log("All pins now closed, safe to exit.");
         });
     }
+
+    console.log("All pins now closed, safe to exit.");
 
     process.exit();
 });
