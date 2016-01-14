@@ -72,6 +72,7 @@ app.get('/stopMotor', function (req, res) {
 function move () {
     if (currentStep >= maxSteps) {
         stopTheMotor();
+        return;
     }
 
     getEndStops();
@@ -142,7 +143,9 @@ function getEndStops () {
     gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
         if(err) console.log("GPIO READ ERROR: " + err);
 
-        if (value === 0) {
+        console.log("Raise endstop value " + value);
+
+        if (value === 1) {
             console.log("Raise Endstop triggered, stopping motor");
         }
     });
@@ -150,7 +153,9 @@ function getEndStops () {
     gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
         if(err) console.log("GPIO READ ERROR: " + err);
 
-        if (value === 0) {
+        console.log("Lower endstop value " + value);
+
+        if (value === 1) {
             console.log("Lower Endstop triggered, stopping motor");
         }
     });
