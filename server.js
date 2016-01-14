@@ -47,22 +47,24 @@ app.get('/', function (req, res) {
 });
 
 app.get('/raise', function (req, res) {
+    res.redirect(301, '/');
+
     status = "raising";
 
     raise();
-
-    res.redirect(301, '/');
 });
 
 app.get('/lower', function (req, res) {
+    res.redirect(301, '/');
+
     status = "lowering";
 
     lower();
-
-    res.redirect(301, '/');
 });
 
 app.get('/stopMotor', function (req, res) {
+    res.redirect(301, '/');
+
     stopTheMotor();
 });
 
