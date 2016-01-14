@@ -47,7 +47,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/raise', function (req, res) {
-    res.redirect(301, '/');
+    // res.redirect(301, '/');
 
     status = "raising";
 
@@ -55,7 +55,7 @@ app.get('/raise', function (req, res) {
 });
 
 app.get('/lower', function (req, res) {
-    res.redirect(301, '/');
+    // res.redirect(301, '/');
 
     status = "lowering";
 
@@ -63,7 +63,7 @@ app.get('/lower', function (req, res) {
 });
 
 app.get('/stopMotor', function (req, res) {
-    res.redirect(301, '/');
+    // res.redirect(301, '/');
 
     stopTheMotor();
 });
