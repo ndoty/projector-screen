@@ -89,7 +89,7 @@ function move () {
 }
 
 // Stopping motor
-function stopTheMotor (res) {
+function stopTheMotor () {
     if (currentStep < maxSteps) {
         console.log("Screen is currently stopped in a unkown state while " + status + ". You will have to rely on the mechanical End Stops to raise or lower the screen now.");
 
@@ -107,8 +107,6 @@ function stopTheMotor (res) {
     }
 
     stopMotor = true;
-
-    res.redirect(301, '/');
 }
 
 function raise () {
