@@ -18,10 +18,10 @@ app.set('title', "Pi Projector Screen Toggle")
 
 // Open all pins for use
 for (var pin in pins) {
-    gpio.open(pins.pin.pinNumber, pins.pin.option, function (err) {
+    gpio.open(pin.pinNumber, pin.option, function (err) {
         if (err) console.log("GPIO OPEN ERROR: " + err);
 
-        console.log("Opened pin " + pins.pin.pinNumber + " as an " + pins.pin.option);
+        console.log("Opened pin " + pin.pinNumber + " as an " + pin.option);
     });
 }
 
@@ -157,10 +157,10 @@ process.on('SIGINT', function () {
     console.log("Caught interrupt signal");
 
     for (var pin in pins) {
-        gpio.close(pins.pin.pinNumber, function (err) {
+        gpio.close(pin.pinNumber, function (err) {
             if(err) console.log("GPIO CLOSE ERROR: " + err);
 
-            console.log("Closed pin " + pins.pin.pinNumber);
+            console.log("Closed pin " + pin.pinNumber);
         });
     }
 
