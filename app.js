@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
-    server = require('http').Server(app),
-    io = require('socket.io')(server),
+    server = app.listen(80),
+    io = require('socket.io').listen(server),
     fs = require('fs'),
     gpio = require('pi-gpio'),
     pins = {
@@ -31,27 +31,11 @@ var express = require('express'),
     webUIConnected = false,
     stream;
 
+server.listen(80);
+
 app.set('view engine', 'jade');
 
 app.set('title', "Pi Projector Screen Toggle");
-
-server.listen(80);
-
-io.on('connection', function (socket) {
-    console.log("Web UI Connected");
-
-    webUIConnected = true;
-
-    stream = socket;
-
-    socket.emit('feedback', message);
-
-    socket.on('disconnect', function (data) {
-        webUIConnected = false;
-
-        console.log("Web UI Disconnected")
-    });
-});
 
 // Open all pins for use
 for (var pin in pins) {
@@ -69,6 +53,22 @@ app.use(express.static('public'));
 app.use(express.static(__dirname + '/bower_components'));
 
 checkLimits();
+
+io.on('connection', function (socket) {
+    console.log("Web UI Connected");
+
+    webUIConnected = true;
+
+    stream = socket;
+
+    socket.emit('feedback', message);
+
+    socket.on('disconnect', function (data) {
+        webUIConnected = false;
+
+        console.log("Web UI Disconnected")
+    });
+});
 
 app.get('/', function (req, res) {
     res.render('index', {feedback: message});
@@ -259,5 +259,3 @@ process.on('SIGINT', function () {
 
     process.exit();
 });
-
-module.exports = app;

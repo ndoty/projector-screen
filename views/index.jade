@@ -4,7 +4,6 @@ html
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     script(src="https://code.jquery.com/jquery-2.1.4.min.js")
-    script(src="/socket.io/socket.io.js")
   body
     div.container
       div.row
@@ -14,4 +13,5 @@ html
           a.btn.btn-default.btn-lg.btn-block(href="/raise") Raise
           a.btn.btn-default.btn-lg.btn-block(href="/lower") Lower
           a.btn.btn-default.btn-lg.btn-block(href="/stopMotor") Stop Motor
+    script(src="/socket.io/socket.io.js")
     script(src="/js/page.js")
