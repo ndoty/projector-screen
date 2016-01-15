@@ -137,34 +137,30 @@ function closePins () {
 
 // Runs motor in the set direction
 function move () {
-    if (!stopMotor && !endStopTriggered) {
-        checkLimits(function () {
-            gpio.write(pins.stepPin.pinNumber, 1, function () {
-                sleep(stepDelay);
+    gpio.write(pins.stepPin.pinNumber, 1, function () {
+        sleep(stepDelay);
 
-                gpio.write(pins.stepPin.pinNumber, 0, function () {
-                    sleep(stepDelay);
+        gpio.write(pins.stepPin.pinNumber, 0, function () {
+            sleep(stepDelay);
 
-                    step++;
+            step++;
 
-                    logMessage("Moved screen " + step + " steps");
+            logMessage("Moved screen " + step + " steps");
 
-                    if (!endStopTriggered) move();
-                });
-            });
+            checkLimits();
         });
-    }
+    });
 }
 
 function raise () {
     gpio.write(pins.dirPin.pinNumber, 1, function () {
-        move();
+        checkLimits();
     });
 }
 
 function lower () {
     gpio.write(pins.dirPin.pinNumber, 0, function() {
-        move();
+        checkLimits();
     });
 }
 
@@ -180,7 +176,7 @@ function sleep (milliseconds) {
 }
 
 // Make sure we can still move
-function checkLimits (cb) {
+function checkLimits () {
     if (status === '') {
         gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
             if(err) console.log("GPIO READ ERROR: " + err);
@@ -239,7 +235,7 @@ function checkLimits (cb) {
         logMessage("Screen is not fully raised or lowered\nRaise or lower accordingly")
     }
 
-    if (!endStopTriggered && cb) cb();
+    if (!endStopTriggered || !stopMotor) move();
 }
 
 process.on('SIGINT', function () {
