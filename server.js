@@ -48,7 +48,9 @@ console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
-server.listen(3000, "127.0.0.1");
+app.use(express.static(__dirname + '/bower_components'));
+
+server.listen(3000);
 
 console.log('Listening at http://192.168.103:3000');
 
