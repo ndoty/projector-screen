@@ -142,7 +142,7 @@ function move () {
 
                     console.log("Moved motor to step " + currentStep + " out of " + maxSteps + " steps");
 
-                    move();
+                    if (!stopMotor) move();
                 });
             });
         }
