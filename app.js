@@ -53,14 +53,9 @@ io.on('connection', function (socket) {
     });
 });
 
-// Open all pins for use
-for (var pin in pins) {
-    console.log("Opening pin " + pins[pin].pinNumber + " as an " + pins[pin].option);
+closePins();
 
-    gpio.open(parseInt(pins[pin].pinNumber), pins[pin].option, function (err) {
-        if (err) console.log("GPIO OPEN ERROR: " + err);
-    });
-}
+openPins();
 
 console.log("All declared pins are now open and available for use.");
 
@@ -111,6 +106,29 @@ app.get('/stopMotor', function (req, res) {
 
     stopTheMotor();
 });
+
+function openPins () {
+    // Open all pins for use
+    for (var pin in pins) {
+        console.log("Opening pin " + pins[pin].pinNumber + " as an " + pins[pin].option);
+
+        gpio.open(parseInt(pins[pin].pinNumber), pins[pin].option, function (err) {
+            if (err) console.log("GPIO OPEN ERROR: " + err);
+        });
+    }
+}
+
+function closePins () {
+    for (var pin in pins) {
+        console.log("Closing pin " + pins[pin].pinNumber);
+
+        gpio.close(pins[pin].pinNumber, function (err) {
+            if(err) console.log("GPIO CLOSE ERROR: " + err);
+        });
+    }
+
+    console.log("All pin closed");
+}
 
 // Runs motor in the set direction
 function move () {
@@ -251,15 +269,9 @@ process.on('SIGINT', function () {
 
     console.log("Caught interrupt signal");
 
-    for (var pin in pins) {
-        console.log("Closing pin " + pins[pin].pinNumber);
+    closePins();
 
-        gpio.close(pins[pin].pinNumber, function (err) {
-            if(err) console.log("GPIO CLOSE ERROR: " + err);
-        });
-    }
-
-    console.log("All pins now closed, safe to exit.");
+    console.log("Safe to exit.");
 
     process.exit();
 });
