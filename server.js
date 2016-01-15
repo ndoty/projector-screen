@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
-    server = require('http').Server(app),
-    io = require('socket.io')(server),
+    http = require('http').createServer(app),
+    io = require('socket.io')(http),
     fs = require('fs'),
     gpio = require('pi-gpio'),
     pins = {
@@ -50,7 +50,7 @@ app.use(express.static('public'));
 
 app.use(express.static(__dirname + '/bower_components'));
 
-server.listen(3000);
+http.listen(3000);
 
 console.log('Listening at http://192.168.103:3000');
 
