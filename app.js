@@ -24,7 +24,7 @@ var express = require('express'),
     },
     maxSteps = 500,
     currentStep = 0,
-    stepDelay = 1,
+    stepDelay = 50,
     stopMotor = false,
     status = '',
     message = '',
@@ -155,7 +155,7 @@ function stopTheMotor () {
 
     if (currentStep < maxSteps) {
         if (currentStep > 0) {
-            message = "Screen is currently stopped at step " + currentStep + " our of " + maxSteps + " steps while " + status;
+            message = "Screen is currently stopped at step " + currentStep + " out of " + maxSteps + " steps while " + status;
 
             console.log(message);
 
