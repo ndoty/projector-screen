@@ -163,7 +163,7 @@ function stopTheMotor () {
                 stream.emit('feedback', message);
             }
         } else {
-            message = "Screen should be either fully raised or lowered - Raise or lower accordingly";
+            message = "Screen should be either fully raised or lowered - raise or lower accordingly";
 
             console.log(message);
 
@@ -177,7 +177,7 @@ function stopTheMotor () {
         if (status === "lowering") {
             message = "Screen is now lowered";
         } else if (status === "raising") {
-            message = message + "Screen is now raised";
+            message = "Screen is now raised";
         }
 
         status = '';
@@ -224,7 +224,7 @@ function checkLimits (cb) {
 
         stopTheMotor();
 
-        return;
+        return false;
     }
 
     if (status === "raising") {
@@ -242,7 +242,7 @@ function checkLimits (cb) {
 
                 stopTheMotor();
 
-                return;
+                return false;
             }
         });
     } else if (status === "lowering") {
@@ -260,12 +260,12 @@ function checkLimits (cb) {
 
                 stopTheMotor();
 
-                return;
+                return false;
             }
         });
     }
 
-    if (cb) cb();
+    if (cb && !stopMotor) cb();
 }
 
 process.on('SIGINT', function () {
