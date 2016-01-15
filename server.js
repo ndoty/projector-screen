@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
-    http = require('http').createServer(app),
-    io = require('socket.io')(http),
+    server = require('http').Server(app),
+    io = require('socket.io')(server),
     fs = require('fs'),
     gpio = require('pi-gpio'),
     pins = {
@@ -31,6 +31,8 @@ var express = require('express'),
     webUIConnected = false,
     stream;
 
+server.listen(80);
+
 app.set('view engine', 'jade');
 
 app.set('title', "Pi Projector Screen Toggle");
@@ -49,10 +51,6 @@ console.log("All declared pins are now open and available for use.");
 app.use(express.static('public'));
 
 app.use(express.static(__dirname + '/bower_components'));
-
-http.listen(3000, "127.0.0.1");
-
-console.log('Listening at http://192.168.103:3000');
 
 checkLimits();
 
