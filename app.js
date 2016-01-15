@@ -85,6 +85,8 @@ app.get('/stopMotor', function (req, res) {
     res.redirect(301, '/');
 
     endStopTriggered = true;
+
+    logMessage("Screen was stopped manually\nIt may be in a odd state\nRaise or lower accordingly");
 });
 
 checkLimits();
