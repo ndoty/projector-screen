@@ -131,7 +131,6 @@ function closePins () {
 // Runs motor in the set direction
 function move () {
     checkLimits(function () {
-        console.log(stopMotor);
         if (!stopMotor) {
             gpio.write(pins.stepPin.pinNumber, 1, function () {
                 sleep(stepDelay);
@@ -141,7 +140,7 @@ function move () {
 
                     currentStep++;
 
-                    console.log("Moved moter to step " + currentStep + " out of " + maxSteps + " steps");
+                    console.log("Moved motor to step " + currentStep + " out of " + maxSteps + " steps");
 
                     move();
                 });
@@ -224,6 +223,8 @@ function checkLimits (cb) {
         steps = 0;
 
         stopTheMotor();
+
+        return;
     }
 
     if (status === "raising") {
@@ -240,6 +241,8 @@ function checkLimits (cb) {
                 }
 
                 stopTheMotor();
+
+                return;
             }
         });
     } else if (status === "lowering") {
@@ -256,6 +259,8 @@ function checkLimits (cb) {
                 }
 
                 stopTheMotor();
+
+                return;
             }
         });
     }
