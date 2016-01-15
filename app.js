@@ -35,7 +35,7 @@ app.set('view engine', 'jade');
 
 app.set('title', "Pi Projector Screen Toggle");
 
-server.listen(80);
+server.listen(3000);
 
 io.on('connection', function (socket) {
     console.log("Web UI Connected");
