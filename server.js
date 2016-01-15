@@ -50,7 +50,7 @@ app.use(express.static('public'));
 
 app.use(express.static(__dirname + '/bower_components'));
 
-http.listen(3000);
+http.listen(3000, "127.0.0.1");
 
 console.log('Listening at http://192.168.103:3000');
 
