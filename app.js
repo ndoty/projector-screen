@@ -59,13 +59,13 @@ app.use(express.static('public'));
 app.use(express.static(__dirname + '/bower_components'));
 
 app.get('/', function (req, res) {
-    stopMotor = false;
-    step = 0;
     res.render('index');
 });
 
 app.get('/raise', function (req, res) {
     res.redirect(301, '/');
+
+    resetTriggers();
 
     status = "raising";
 
@@ -76,6 +76,8 @@ app.get('/raise', function (req, res) {
 
 app.get('/lower', function (req, res) {
     res.redirect(301, '/');
+
+    resetTriggers();
 
     status = "lowering";
 
@@ -93,6 +95,12 @@ app.get('/stopMotor', function (req, res) {
 });
 
 checkLimits();
+
+function resetTriggers () {
+    stopMotor = false;
+    step = 0;
+    endStopTriggered = false;
+}
 
 function logMessage (message) {
     console.log(message);
