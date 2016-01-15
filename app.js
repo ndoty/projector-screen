@@ -131,6 +131,7 @@ function closePins () {
 // Runs motor in the set direction
 function move () {
     checkLimits(function () {
+        console.log(stopMotor);
         if (!stopMotor) {
             gpio.write(pins.stepPin.pinNumber, 1, function () {
                 sleep(stepDelay);
@@ -139,6 +140,8 @@ function move () {
                     sleep(stepDelay);
 
                     currentStep++;
+
+                    console.log("Moved moter to step " + currentStep + " out of " + maxSteps + " steps");
                 });
             });
         }
@@ -147,6 +150,8 @@ function move () {
 
 // Stopping motor
 function stopTheMotor () {
+    stopMotor = true;
+
     if (currentStep < maxSteps) {
         if (currentStep > 0) {
             message = "Screen is currently stopped at step " + currentStep + " our of " + maxSteps + " steps while " + status;
@@ -182,8 +187,6 @@ function stopTheMotor () {
             stream.emit('feedback', message);
         }
     }
-
-    stopMotor = true;
 }
 
 function raise () {
@@ -225,8 +228,6 @@ function checkLimits (cb) {
         gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
             if(err) console.log("GPIO READ ERROR: " + err);
 
-            console.log("Raise endstop value " + value);
-
             if (value === 1) {
                 message = "Raise Endstop triggered, stopping motor";
 
@@ -242,8 +243,6 @@ function checkLimits (cb) {
     } else if (status === "lowering") {
         gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
             if(err) console.log("GPIO READ ERROR: " + err);
-
-            console.log("Lower endstop value " + value);
 
             if (value === 1) {
                 message = "Lower Endstop triggered, stopping motor";
