@@ -15,14 +15,14 @@ var express = require('express'),
         },
         raiseEndStop: {
             pinNumber: 35,
-            option: "in pullup"
+            option: "in pulldown"
         },
         lowerEndStop:{
             pinNumber: 36,
-            option: "in pullup"
+            option: "in pulldown"
         }
     },
-    maxSteps = 100,
+    maxSteps = 500,
     currentStep = 0,
     stepDelay = 1,
     stopMotor = false,
