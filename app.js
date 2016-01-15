@@ -26,6 +26,7 @@ var express = require('express'),
     stepDelay = 1,
     status = '',
     endStopTriggered = false,
+    stopMotor = false,
     webUIConnected = false,
     stream;
 
@@ -84,7 +85,7 @@ app.get('/lower', function (req, res) {
 app.get('/stopMotor', function (req, res) {
     res.redirect(301, '/');
 
-    endStopTriggered = true;
+    stopMotor = true;
 
     logMessage("Screen was stopped manually\nIt may be in a odd state\nRaise or lower accordingly");
 });
@@ -126,8 +127,8 @@ function closePins () {
 
 // Runs motor in the set direction
 function move () {
-    checkLimits(function () {
-        if (!endStopTriggered) {
+    if (!stopMotor && !endStopTriggered) {
+        checkLimits(function () {
             gpio.write(pins.stepPin.pinNumber, 1, function () {
                 sleep(stepDelay);
 
@@ -141,12 +142,8 @@ function move () {
                     if (!endStopTriggered) move();
                 });
             });
-        }
-    });
-}
-
-// Stopping motor
-function stopTheMotor () {
+        });
+    }
 }
 
 function raise () {
