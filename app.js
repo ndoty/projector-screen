@@ -130,18 +130,18 @@ function closePins () {
 
 // Runs motor in the set direction
 function move () {
-    checkLimits();
+    checkLimits(function () {
+        if (!stopMotor) {
+            gpio.write(pins.stepPin.pinNumber, 1, function () {
+                sleep(stepDelay);
 
-    gpio.write(pins.stepPin.pinNumber, 1, function () {
-        sleep(stepDelay);
+                gpio.write(pins.stepPin.pinNumber, 0, function () {
+                    sleep(stepDelay);
 
-        gpio.write(pins.stepPin.pinNumber, 0, function () {
-            sleep(stepDelay);
-
-            currentStep++;
-
-            if (!stopMotor) move();
-        });
+                    currentStep++;
+                });
+            });
+        }
     });
 }
 
@@ -214,13 +214,11 @@ function sleep (milliseconds) {
 }
 
 // Make sure we can still move
-function checkLimits () {
+function checkLimits (cb) {
     if (currentStep >= maxSteps) {
         steps = 0;
 
         stopTheMotor();
-
-        return;
     }
 
     if (status === "raising") {
@@ -260,6 +258,8 @@ function checkLimits () {
             }
         });
     }
+
+    cb();
 }
 
 process.on('SIGINT', function () {
