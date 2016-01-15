@@ -48,12 +48,9 @@ console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
-server.listen(3000, function () {
-    var host = server.address().address,
-        port = server.address().port;
+server.listen(3000, "127.0.0.1");
 
-    console.log('Listening at http://192.168.103:%s', port);
-});
+console.log('Listening at http://192.168.103:%s', server.address().port);
 
 checkLimits();
 
