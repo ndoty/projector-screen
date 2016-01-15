@@ -223,41 +223,43 @@ function checkLimits () {
         return;
     }
 
-    gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
-        if(err) console.log("GPIO READ ERROR: " + err);
+    if (status === "raising") {
+        gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
+            if(err) console.log("GPIO READ ERROR: " + err);
 
-        console.log("Raise endstop value " + value);
+            console.log("Raise endstop value " + value);
 
-        if (value === 1) {
-            message = "Raise Endstop triggered, stopping motor";
+            if (value === 1) {
+                message = "Raise Endstop triggered, stopping motor";
 
-            console.log(message);
+                console.log(message);
 
-            if (webUIConnected) {
-                stream.emit('feedback', message);
+                if (webUIConnected) {
+                    stream.emit('feedback', message);
+                }
+
+                stopTheMotor();
             }
+        });
+    } else if (status === "lowering") {
+        gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
+            if(err) console.log("GPIO READ ERROR: " + err);
 
-            stopTheMotor();
-        }
-    });
+            console.log("Lower endstop value " + value);
 
-    gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
-        if(err) console.log("GPIO READ ERROR: " + err);
+            if (value === 1) {
+                message = "Lower Endstop triggered, stopping motor";
 
-        console.log("Lower endstop value " + value);
+                console.log(message);
 
-        if (value === 1) {
-            message = "Lower Endstop triggered, stopping motor";
+                if (webUIConnected) {
+                    stream.emit('feedback', message);
+                }
 
-            console.log(message);
-
-            if (webUIConnected) {
-                stream.emit('feedback', message);
+                stopTheMotor();
             }
-
-            stopTheMotor();
-        }
-    });
+        });
+    }
 }
 
 process.on('SIGINT', function () {
