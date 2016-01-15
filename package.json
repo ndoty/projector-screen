@@ -24,6 +24,7 @@
   "homepage": "https://github.com/ndoty/projector-screen",
   "dependencies": {
     "express": "^4.13.3",
+    "fs": "0.0.2",
     "pi-gpio": "0.0.8",
     "socket.io": "^1.4.4"
   },
