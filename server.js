@@ -50,7 +50,7 @@ app.use(express.static('public'));
 
 server.listen(3000, "127.0.0.1");
 
-console.log('Listening at http://192.168.103:%s', server.address().port);
+console.log('Listening at http://192.168.103:3000');
 
 checkLimits();
 
