@@ -259,7 +259,7 @@ function checkLimits (cb) {
         });
     }
 
-    cb();
+    if (cb) cb();
 }
 
 process.on('SIGINT', function () {
