@@ -60,6 +60,7 @@ app.use(express.static(__dirname + '/bower_components'));
 
 app.get('/', function (req, res) {
     stopMotor = false;
+    step = 0;
     res.render('index');
 });
 
