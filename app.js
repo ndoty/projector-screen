@@ -81,6 +81,8 @@ app.get('/raise', function (req, res) {
 
     message = "Screen is currently " + status;
 
+    console.log(message);
+
     if (webUIConnected) {
         stream.emit('feedback', message);
     }
@@ -94,6 +96,8 @@ app.get('/lower', function (req, res) {
     status = "lowering";
 
     message = "Screen is currently " + status;
+
+    console.log(message);
 
     if (webUIConnected) {
         stream.emit('feedback', message);
