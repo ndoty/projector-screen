@@ -142,6 +142,8 @@ function move () {
                     currentStep++;
 
                     console.log("Moved moter to step " + currentStep + " out of " + maxSteps + " steps");
+
+                    move();
                 });
             });
         }
@@ -266,7 +268,7 @@ process.on('SIGINT', function () {
         stream.emit('feedback', "SERVER DOWN");
     }
 
-    console.log("Caught interrupt signal");
+    console.log("\nCaught interrupt signal");
 
     closePins();
 
