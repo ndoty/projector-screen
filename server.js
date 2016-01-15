@@ -1,5 +1,4 @@
-var express = require('express'),
-    app = express(),
+var app = require('express')(),
     server = require('http').Server(app),
     io = require('socket.io')(server),
     fs = require('fs'),
@@ -48,7 +47,7 @@ console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
-var server = app.listen(3000, function () {
+server.listen(3000, function () {
     var host = server.address().address,
         port = server.address().port;
 
