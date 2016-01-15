@@ -53,11 +53,7 @@ io.on('connection', function (socket) {
     });
 });
 
-closePins();
-
 openPins();
-
-console.log("All declared pins are now open and available for use.");
 
 app.use(express.static('public'));
 
@@ -116,6 +112,8 @@ function openPins () {
             if (err) console.log("GPIO OPEN ERROR: " + err);
         });
     }
+
+    console.log("All declared pins are now open and available for use.");
 }
 
 function closePins () {
@@ -127,7 +125,7 @@ function closePins () {
         });
     }
 
-    console.log("All pin closed");
+    console.log("All declared pins are now closed");
 }
 
 // Runs motor in the set direction
@@ -151,7 +149,7 @@ function move () {
 function stopTheMotor () {
     if (currentStep < maxSteps) {
         if (currentStep > 0) {
-            message = "Screen is currently stopped at step " + currentStep + " our of " + maxsteps + " steps while " + status;
+            message = "Screen is currently stopped at step " + currentStep + " our of " + maxSteps + " steps while " + status;
 
             console.log(message);
 
