@@ -7,19 +7,19 @@ var express = require('express'),
     pins = {
         stepPin: {
             pinNumber: 37,
-            option: "out"
+            option: "output"
         },
         dirPin: {
             pinNumber: 38,
-            option: "out"
+            option: "output"
         },
         raiseEndStop: {
             pinNumber: 35,
-            option: "in pulldown"
+            option: "input pulldown"
         },
         lowerEndStop:{
             pinNumber: 36,
-            option: "in pulldown"
+            option: "input pulldown"
         }
     },
     step = 0,
@@ -94,7 +94,7 @@ app.get('/stopMotor', function (req, res) {
     logMessage("Screen was stopped manually\nIt may be in a odd state\nRaise or lower accordingly");
 });
 
-checkLimits();
+checkLimits(true);
 
 function resetTriggers () {
     stopMotor = false;
@@ -120,7 +120,7 @@ function openPins () {
         });
     }
 
-    console.log("All declared pins are now open and available for use.");
+    console.log("All declared pins are now open and available for use");
 }
 
 function closePins () {
@@ -176,7 +176,7 @@ function sleep (milliseconds) {
 }
 
 // Make sure we can still move
-function checkLimits () {
+function checkLimits (start) {
     if (status === '') {
         gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
             if(err) console.log("GPIO READ ERROR: " + err);
@@ -235,7 +235,7 @@ function checkLimits () {
         logMessage("Screen is not fully raised or lowered\nRaise or lower accordingly")
     }
 
-    if (!endStopTriggered || !stopMotor) move();
+    if (!endStopTriggered && !stopMotor && !start) move();
 }
 
 process.on('SIGINT', function () {
