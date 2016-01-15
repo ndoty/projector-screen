@@ -265,6 +265,8 @@ function checkLimits (cb) {
         });
     }
 
+    console.log(cb, !stopMotor);
+
     if (cb && !stopMotor) cb();
 }
 
