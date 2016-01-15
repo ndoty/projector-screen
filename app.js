@@ -15,11 +15,11 @@ var express = require('express'),
         },
         raiseEndStop: {
             pinNumber: 35,
-            option: "in"
+            option: "in pullup"
         },
         lowerEndStop:{
             pinNumber: 36,
-            option: "in"
+            option: "in pullup"
         }
     },
     maxSteps = 100,
@@ -135,7 +135,7 @@ function stopTheMotor () {
         if (currentStep > 0) {
             message = "Screen is currently stopped at step " + currentStep + " our of " + maxsteps + " steps while " + status;
 
-            console.log(maeesage);
+            console.log(message);
 
             if (webUIConnected) {
                 stream.emit('feedback', message);
@@ -143,7 +143,7 @@ function stopTheMotor () {
         } else {
             message = "Screen should be either fully raised or lowered - Raise or lower accordingly";
 
-            console.log(maeesage);
+            console.log(message);
 
             if (webUIConnected) {
                 stream.emit('feedback', message);
