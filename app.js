@@ -29,7 +29,6 @@ var express = require('express'),
     step = 0,
     // stepDelay = 0,
     status = '',
-    endStopTriggered = false,
     stopMotor = false,
     webUIConnected = false,
     stream;
@@ -98,13 +97,10 @@ app.get('/stopMotor', function (req, res) {
     res.redirect(301, '/');
 });
 
-checkLimits(true);
-
 function resetTriggers () {
     gpio.write(pins.enPin.pinNumber, 0, function () {
         stopMotor = false;
         step = 0;
-        endStopTriggered = false;
     });
 }
 
@@ -183,69 +179,28 @@ function lower () {
 
 // Make sure we can still move
 function checkLimits (start) {
-    if (status === '') {
+    if (status === "raising" && !stopMotor) {
         gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
             if(err) console.log("GPIO READ ERROR: " + err);
 
-            if (value === 1) {
-                endStopTriggered = true;
-
+            if (value === 0) {
+                move();
+            } else {
                 logMessage("Raise Endstop triggered\nScreen is raised");
-
-                return;
-            } else {
-                endStopTriggered = false;
-            }
-        });
-
-        gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
-            if(err) console.log("GPIO READ ERROR: " + err);
-
-            if (value === 1) {
-                endStopTriggered = true;
-
-                logMessage("Lower Endstop triggered\nScreen is lowered");
-
-                return;
-            } else {
-                endStopTriggered = false;
-            }
-        });
-    } else if (status === "raising") {
-        gpio.read(pins.raiseEndStop.pinNumber, function(err, value) {
-            if(err) console.log("GPIO READ ERROR: " + err);
-
-            if (value === 1) {
-                endStopTriggered = true;
-
-                logMessage("Raise Endstop triggered\nScreen is raised");
-            } else {
-                endStopTriggered = false;
-            }
-        });
-    } else if (status === "lowering"  || status === '') {
-        gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
-            if(err) console.log("GPIO READ ERROR: " + err);
-
-            if (value === 1) {
-                endStopTriggered = true;
-
-                logMessage("Lower Endstop triggered\nScreen is lowered");
-            } else {
-                endStopTriggered = false;
             }
         });
     }
 
-    if (!endStopTriggered && status === '') {
-        logMessage("Screen is not fully raised or lowered\nRaise or lower accordingly")
-    }
+    if (status === "lowering" && !stopMotor) {
+        gpio.read(pins.lowerEndStop.pinNumber, function(err, value) {
+            if(err) console.log("GPIO READ ERROR: " + err);
 
-    if (!endStopTriggered && !stopMotor && !start) {
-        move();
-    } else {
-        logMessage("Screen moved " + step + " steps");
-        resetTriggers();
+            if (value === 0) {
+                move();
+            } else {
+                logMessage("Lower Endstop triggered\nScreen is lowered");
+            }
+        });
     }
 }
 
