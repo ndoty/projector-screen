@@ -23,7 +23,7 @@ var express = require('express'),
         }
     },
     step = 0,
-    stepDelay = 10,
+    stepDelay = 1,
     status = '',
     endStopTriggered = false,
     stopMotor = false,
