@@ -101,10 +101,11 @@ app.get('/stopMotor', function (req, res) {
 checkLimits(true);
 
 function resetTriggers () {
-    stopMotor = false;
-    step = 0;
-    endStopTriggered = false;
-    gpio.write(pins.enPin.pinNumber, 0);
+    gpio.write(pins.enPin.pinNumber, 0, function () {
+        stopMotor = false;
+        step = 0;
+        endStopTriggered = false;
+    });
 }
 
 function logMessage (message) {
