@@ -144,10 +144,10 @@ function closePins () {
 // Runs motor in the set direction
 function move () {
     gpio.write(pins.stepPin.pinNumber, 1, function () {
-        sleep(stepDelay);
+        // sleep(stepDelay);
 
         gpio.write(pins.stepPin.pinNumber, 0, function () {
-            sleep(stepDelay);
+            // sleep(stepDelay);
 
             step++;
 
