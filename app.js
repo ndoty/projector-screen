@@ -147,7 +147,7 @@ function move () {
         gpio.write(pins.stepPin.pinNumber, 0, function () {
             step++;
 
-            logMessage("Moved screen " + step + " steps");
+            // logMessage("Moved screen " + step + " steps");
 
             checkLimits();
         });
