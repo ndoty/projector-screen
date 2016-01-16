@@ -27,7 +27,7 @@ var express = require('express'),
         }
     },
     step = 0,
-    stepDelay = 10,
+    stepDelay = 0.5,
     status = '',
     endStopTriggered = false,
     stopMotor = false,
