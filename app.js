@@ -27,7 +27,7 @@ var express = require('express'),
         }
     },
     step = 0,
-    // stepDelay = 0,
+    stepDelay = 0.05,
     status = '',
     stopMotor = false,
     webUIConnected = false,
@@ -115,7 +115,7 @@ function logMessage (message) {
 function openPins () {
     // Open all pins for use
     for (var pin in pins) {
-        console.log("Opening pin " + pins[pin].pinNumber + " as an " + pins[pin].option);
+        console.log("Opening " + pin + " on pin " + pins[pin].pinNumber + " as an " + pins[pin].option);
 
         gpio.open(pins[pin].pinNumber, pins[pin].option, function (err) {
             if (err) console.log("GPIO OPEN ERROR: " + err);
@@ -140,6 +140,7 @@ function closePins () {
 // Runs motor in the set direction
 function move () {
     gpio.write(pins.stepPin.pinNumber, 1, function () {
+        sleep(stepDelay);
         gpio.write(pins.stepPin.pinNumber, 0, function () {
             step++;
 
@@ -166,16 +167,16 @@ function lower () {
     });
 }
 
-// // Go to sleep
-// function sleep (milliseconds) {
-//     var start = new Date().getTime();
+// Go to sleep
+function sleep (milliseconds) {
+    var start = new Date().getTime();
 
-//     for (var i = 0; i < 1e7; i++) {
-//         if ((new Date().getTime() - start) > milliseconds) {
-//             break;
-//         }
-//     }
-// }
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
+}
 
 // Make sure we can still move
 function checkLimits (start) {
