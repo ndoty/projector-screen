@@ -6,11 +6,15 @@ var express = require('express'),
     gpio = require('pi-gpio'),
     pins = {
         stepPin: {
-            pinNumber: 37,
+            pinNumber: 36,
             option: "output"
         },
         dirPin: {
             pinNumber: 38,
+            option: "output"
+        },
+        enPin: {
+            pinNumber: 40,
             option: "output"
         },
         raiseEndStop: {
@@ -18,7 +22,7 @@ var express = require('express'),
             option: "input pulldown"
         },
         lowerEndStop:{
-            pinNumber: 36,
+            pinNumber: 37,
             option: "input pulldown"
         }
     },
@@ -100,6 +104,7 @@ function resetTriggers () {
     stopMotor = false;
     step = 0;
     endStopTriggered = false;
+    gpio.write(pins.enPin.pinNumber, 0);
 }
 
 function logMessage (message) {
@@ -115,7 +120,7 @@ function openPins () {
     for (var pin in pins) {
         console.log("Opening pin " + pins[pin].pinNumber + " as an " + pins[pin].option);
 
-        gpio.open(parseInt(pins[pin].pinNumber), pins[pin].option, function (err) {
+        gpio.open(pins[pin].pinNumber, pins[pin].option, function (err) {
             if (err) console.log("GPIO OPEN ERROR: " + err);
         });
     }
@@ -154,13 +159,17 @@ function move () {
 
 function raise () {
     gpio.write(pins.dirPin.pinNumber, 1, function () {
-        checkLimits();
+        gpio.write(pins.enPin.pinNumber, 1, function () {
+            checkLimits();
+        })
     });
 }
 
 function lower () {
     gpio.write(pins.dirPin.pinNumber, 0, function() {
-        checkLimits();
+        gpio.write(pins.enPin.pinNumber, 1, function () {
+            checkLimits();
+        })
     });
 }
 
@@ -235,7 +244,11 @@ function checkLimits (start) {
         logMessage("Screen is not fully raised or lowered\nRaise or lower accordingly")
     }
 
-    if (!endStopTriggered && !stopMotor && !start) move();
+    if (!endStopTriggered && !stopMotor && !start) {
+        move();
+    } else {
+        resetTriggers();
+    }
 }
 
 process.on('SIGINT', function () {
