@@ -27,7 +27,7 @@ var express = require('express'),
         }
     },
     step = 0,
-    stepDelay = 0,
+    // stepDelay = 0,
     status = '',
     endStopTriggered = false,
     stopMotor = false,
@@ -67,8 +67,6 @@ app.get('/', function (req, res) {
 });
 
 app.get('/raise', function (req, res) {
-    res.redirect(301, '/');
-
     resetTriggers();
 
     status = "raising";
@@ -76,11 +74,11 @@ app.get('/raise', function (req, res) {
     logMessage("Screen is currently " + status);
 
     raise();
+
+    res.redirect(301, '/');
 });
 
 app.get('/lower', function (req, res) {
-    res.redirect(301, '/');
-
     resetTriggers();
 
     status = "lowering";
@@ -88,14 +86,16 @@ app.get('/lower', function (req, res) {
     logMessage("Screen is currently " + status);
 
     lower();
+
+    res.redirect(301, '/');
 });
 
 app.get('/stopMotor', function (req, res) {
-    res.redirect(301, '/');
-
     stopMotor = true;
 
     logMessage("Screen was stopped manually\nIt may be in a odd state\nRaise or lower accordingly");
+
+    res.redirect(301, '/');
 });
 
 checkLimits(true);
@@ -111,9 +111,9 @@ function resetTriggers () {
 function logMessage (message) {
     console.log(message);
 
-    if (webUIConnected) {
-        stream.emit('feedback', message);
-    }
+    // if (webUIConnected) {
+    //     stream.emit('feedback', message);
+    // }
 }
 
 function openPins () {
@@ -144,11 +144,7 @@ function closePins () {
 // Runs motor in the set direction
 function move () {
     gpio.write(pins.stepPin.pinNumber, 1, function () {
-        // sleep(stepDelay);
-
         gpio.write(pins.stepPin.pinNumber, 0, function () {
-            // sleep(stepDelay);
-
             step++;
 
             logMessage("Moved screen " + step + " steps");
@@ -174,16 +170,16 @@ function lower () {
     });
 }
 
-// Go to sleep
-function sleep (milliseconds) {
-    var start = new Date().getTime();
+// // Go to sleep
+// function sleep (milliseconds) {
+//     var start = new Date().getTime();
 
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds) {
-            break;
-        }
-    }
-}
+//     for (var i = 0; i < 1e7; i++) {
+//         if ((new Date().getTime() - start) > milliseconds) {
+//             break;
+//         }
+//     }
+// }
 
 // Make sure we can still move
 function checkLimits (start) {
@@ -248,6 +244,7 @@ function checkLimits (start) {
     if (!endStopTriggered && !stopMotor && !start) {
         move();
     } else {
+        logMessage("Screen moved " + step + " steps");
         resetTriggers();
     }
 }
